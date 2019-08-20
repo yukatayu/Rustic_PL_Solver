@@ -1,0 +1,3 @@
+[submodule "Rustic_SAT_Solver"]
+	path = Rustic_SAT_Solver
+	url = https://github.com/yukatayu/Rustic_SAT_Solver.git
