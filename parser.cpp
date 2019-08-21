@@ -58,9 +58,9 @@ result_t conjunction(const std::string& s, int p){
 		for(auto&& cnf : CNF1) CNF0.push_back(cnf);
 		auto newAlias = getTmpName();
 		// alias0 && alias1 <-> newAlias
-        CNF0.push_back({{L{alias0,true}, L{alias1,true}, L{newAlias,false}}});
-        CNF0.push_back({{L{newAlias,true}, L{alias0,false}}});
-        CNF0.push_back({{L{newAlias,true}, L{alias1,false}}});
+		CNF0.push_back({{L{alias0,true}, L{alias1,true}, L{newAlias,false}}});
+		CNF0.push_back({{L{newAlias,true}, L{alias0,false}}});
+		CNF0.push_back({{L{newAlias,true}, L{alias1,false}}});
 		alias0 = newAlias;
 		newPos0 = newPos1;
 	}
@@ -75,9 +75,9 @@ result_t disjunction(const std::string& s, int p){
 		for(auto&& cnf : CNF1) CNF0.push_back(cnf);
 		auto newAlias = getTmpName();
 		// alias0 || alias1 <-> newAlias
-        CNF0.push_back({{L{alias0,false}, L{alias1,false}, L{newAlias,true}}});
-        CNF0.push_back({{L{newAlias,false}, L{alias0,true}}});
-        CNF0.push_back({{L{newAlias,false}, L{alias1,true}}});
+		CNF0.push_back({{L{alias0,false}, L{alias1,false}, L{newAlias,true}}});
+		CNF0.push_back({{L{newAlias,false}, L{alias0,true}}});
+		CNF0.push_back({{L{newAlias,false}, L{alias1,true}}});
 		alias0 = newAlias;
 		newPos0 = newPos1;
 	}
@@ -93,9 +93,9 @@ result_t expression(const std::string& s, int p){
 		auto newAlias = getTmpName();
 		// (!alias0 || alias1) <-> newAlias
 		// TODO: 実装
-        //CNF0.push_back({{L{alias0,false}, L{alias1,false}, L{newAlias,true}}});
-        //CNF0.push_back({{L{newAlias,false}, L{alias0,true}}});
-        //CNF0.push_back({{L{newAlias,false}, L{alias1,true}}});
+		//CNF0.push_back({{L{alias0,false}, L{alias1,false}, L{newAlias,true}}});
+		//CNF0.push_back({{L{newAlias,false}, L{alias0,true}}});
+		//CNF0.push_back({{L{newAlias,false}, L{alias1,true}}});
 		alias0 = newAlias;
 		newPos0 = newPos1;
 	}
@@ -104,10 +104,10 @@ result_t expression(const std::string& s, int p){
 
 // エントリーポイント
 cnf_t parse(const std::string& s){
-    auto [prop, CNF, alias, newPos] = expression(s);
-    if(newPos != static_cast<int>(s.size()))
-        throw std::runtime_error("unknown token remains");
-    CNF.push_back({{L{alias,false}}});
-    return cnf_t{prop, CNF};
+	auto [prop, CNF, alias, newPos] = expression(s);
+	if(newPos != static_cast<int>(s.size()))
+		throw std::runtime_error("unknown token remains");
+	CNF.push_back({{L{alias,false}}});
+	return cnf_t{prop, CNF};
 }
 
