@@ -9,10 +9,12 @@ int main(){
 	// solve
 	auto [isSAT, conds] = solve(CNF);
 	// print
-	std::cout << (isSAT ? "This is SAT" : "This is not SAT") << std::endl;
-	for(auto&& cond : conds){
-		std::cout << "----------" << std::endl;
-		for(auto&& kv : cond)
-			std::cout << kv.first.name << " = " << kv.second << std::endl;
+	if(isSAT){
+		std::cout << "satisfiable." << std::endl;
+		for(auto&& kv : *conds.begin())
+			if(prop.count(kv.first))
+				std::cout << kv.first.name << " = " << kv.second << std::endl;
+	}else{
+		std::cout << "unsatisfiable." << std::endl;
 	}
 }
