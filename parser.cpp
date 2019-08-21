@@ -86,20 +86,29 @@ result_t disjunction(const std::string& s, int p){
 
 result_t expression(const std::string& s, int p){
 	auto&& [prop0, CNF0, alias0, newPos0] = disjunction(s, p);
+	auto newAlias = alias0;
+	int isEquivalence = false;
 	while(s[newPos0] == '='){
+		if(!isEquivalence){
+			isEquivalence = true;
+			newAlias = getTmpName();
+		}
 		auto[prop1, CNF1, alias1, newPos1] = disjunction(s, newPos0 + 1);
 		for(auto&& p : prop1) prop0.insert(p);
 		for(auto&& cnf : CNF1) CNF0.push_back(cnf);
-		auto newAlias = getTmpName();
+
 		// (!alias0 || alias1) <-> newAlias
-		// TODO: 実装
-		//CNF0.push_back({{L{alias0,false}, L{alias1,false}, L{newAlias,true}}});
-		//CNF0.push_back({{L{newAlias,false}, L{alias0,true}}});
-		//CNF0.push_back({{L{newAlias,false}, L{alias1,true}}});
-		alias0 = newAlias;
+		auto resABeq = expression("(!"+alias0+"|"+alias1+")&(!"+alias1+"|"+alias0+")");
+		for(auto&& cond : std::get<1>(resABeq))
+			CNF0.push_back(cond);
+		auto resABeqCeq = expression("(!"+std::get<2>(resABeq)+"|"+newAlias+")&(!"+newAlias+"|"+std::get<2>(resABeq)+")");
+		for(auto&& cond : std::get<1>(resABeqCeq))
+			CNF0.push_back(cond);
+		CNF0.push_back({{L{std::get<2>(resABeqCeq), false}}});
+
 		newPos0 = newPos1;
 	}
-	return result_t{prop0, CNF0, alias0, newPos0};
+	return result_t{prop0, CNF0, newAlias, newPos0};
 }
 
 // エントリーポイント
