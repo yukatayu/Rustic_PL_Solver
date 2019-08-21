@@ -68,7 +68,6 @@ result_t conjunction(const std::string& s, int p){
 }
 
 result_t disjunction(const std::string& s, int p){
-	std::vector<std::string> disj;
 	auto&& [prop0, CNF0, alias0, newPos0] = conjunction(s, p);
 	while(s[newPos0] == '|'){
 		auto[prop1, CNF1, alias1, newPos1] = conjunction(s, newPos0 + 1);
@@ -86,7 +85,21 @@ result_t disjunction(const std::string& s, int p){
 }
 
 result_t expression(const std::string& s, int p){
-	return disjunction(s, p);
+	auto&& [prop0, CNF0, alias0, newPos0] = disjunction(s, p);
+	while(s[newPos0] == '='){
+		auto[prop1, CNF1, alias1, newPos1] = disjunction(s, newPos0 + 1);
+		for(auto&& p : prop1) prop0.insert(p);
+		for(auto&& cnf : CNF1) CNF0.push_back(cnf);
+		auto newAlias = getTmpName();
+		// (!alias0 || alias1) <-> newAlias
+		// TODO: 実装
+        //CNF0.push_back({{L{alias0,false}, L{alias1,false}, L{newAlias,true}}});
+        //CNF0.push_back({{L{newAlias,false}, L{alias0,true}}});
+        //CNF0.push_back({{L{newAlias,false}, L{alias1,true}}});
+		alias0 = newAlias;
+		newPos0 = newPos1;
+	}
+	return result_t{prop0, CNF0, alias0, newPos0};
 }
 
 // エントリーポイント
